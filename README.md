@@ -1,6 +1,4 @@
-# Reimbursement Management API – Laravel
-
-Sistem backend untuk pengajuan dan pengelolaan reimbursement karyawan menggunakan Laravel. Mendukung manajemen role-permission, approval workflow, dan notifikasi email menggunakan queue.
+# Reimbursement Management
 
 ---
 
@@ -28,62 +26,56 @@ Sistem backend untuk pengajuan dan pengelolaan reimbursement karyawan menggunaka
 
 ---
 
-## 📦 Instalasi
+## 📦 Instalasi Backend
 
-1. Clone repository
+Clone repository
 ```bash
-git clone https://github.com/yourusername/reimbursement-api.git
+git clone https://github.com/qadrima/Sistem-Manajemen-Reimbursement-Karyawan.git
+```
 
-cd reimbursement-api
+```bash
+cd Sistem-Manajemen-Reimbursement-Karyawan/backend
+```
 
 Install dependencies
-
-bash
-Salin
-Edit
+```bash
 composer install
+```
+
 Salin file environment dan sesuaikan
-
-bash
-Salin
-Edit
+```bash
 cp .env.example .env
-Generate key dan JWT secret
+```
 
-bash
-Salin
-Edit
+Generate key dan JWT secret
+```bash
 php artisan key:generate
 php artisan jwt:secret
-Buat database dan sesuaikan .env:
+```
 
-env
-Salin
-Edit
+Buat database dan sesuaikan .env:
+```bash
 DB_DATABASE=reimbursement
 DB_USERNAME=root
 DB_PASSWORD=
+```
+
 Jalankan migrasi dan seeder:
-
-bash
-Salin
-Edit
+```bash
 php artisan migrate --seed
-Jalankan queue:
+```
 
-bash
-Salin
-Edit
-php artisan queue:work
-✉️ Konfigurasi Email (Mailtrap)
-Set di .env:
-
-env
-Salin
-Edit
+✉️ Konfigurasi Email (Mailtrap) Set di .env:
+```bash
 MAIL_MAILER=smtp
 MAIL_HOST=sandbox.smtp.mailtrap.io
 MAIL_PORT=2525
 MAIL_USERNAME=your_mailtrap_username
 MAIL_PASSWORD=your_mailtrap_password
 MAIL_ENCRYPTION=null
+```
+
+Jalankan queue:
+```bash
+php artisan queue:work
+```
