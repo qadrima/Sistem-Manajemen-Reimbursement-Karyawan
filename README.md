@@ -79,3 +79,10 @@ Jalankan queue:
 ```bash
 php artisan queue:work
 ```
+
+## 📦 Instalasi Frontend
+
+Clone repository
+```bash
+git clone 
+```
