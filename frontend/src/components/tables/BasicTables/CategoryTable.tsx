@@ -1,19 +1,11 @@
 import React from 'react';
+import { CategoryModel } from '../../../hooks/useCategories';
 
-export interface UserModel {
-    id: number;
-    name: string;
-    email: string;
-    roles: string[];
+interface CategoryTableProps {
+    data: CategoryModel[];
 }
 
-interface UserTableProps {
-    data: UserModel[];
-    availableRoles: { id: number; name: string; }[];
-    onRoleChange: (userId: number, newRole: string) => void;
-}
-
-const UserTable: React.FC<UserTableProps> = ({ data, availableRoles, onRoleChange }) => {
+const CategoryTable: React.FC<CategoryTableProps> = ({ data }) => {
 
     return (
         <div className="overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-white/[0.05] dark:bg-white/[0.03]">
@@ -28,38 +20,29 @@ const UserTable: React.FC<UserTableProps> = ({ data, availableRoles, onRoleChang
                                 Name
                             </th>
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                Email
+                                Limit Per Month
                             </th>
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                Roles
+                                Created At
                             </th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-                        {data.map((user, key) => (
-                            <tr key={user.id}>
+                        {data.map((category, key) => (
+                            <tr key={category.id}>
                                 <td className=" px-4 py-5">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{key + 1}</p>
                                 </td>
                                 <td className=" px-4 py-5">
-                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{user.name}</p>
+                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{category.name}</p>
                                 </td>
                                 <td className=" px-4 py-5 ">
-                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{user.email}</p>
+                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{category.limit_per_month}</p>
                                 </td>
                                 <td className=" px-4 py-5 ">
-                                    <select
-                                        className="p-1 text-gray-500 text-start text-theme-sm dark:text-gray-400 dark:bg-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                        value={user.roles[0] || ''} // Assuming the first role is the current one
-                                        onChange={(e) => onRoleChange(user.id, e.target.value)}
-                                    >
-                                        <option value="" disabled>Select Role</option>
-                                        {availableRoles.map(role => (
-                                            <option key={role.id} value={role.name}>
-                                                {role.name}
-                                            </option>
-                                        ))}
-                                    </select>
+                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                        {new Date(category.created_at).toLocaleString("id-ID")}
+                                    </p>
                                 </td>
                             </tr>
                         ))}
@@ -70,4 +53,4 @@ const UserTable: React.FC<UserTableProps> = ({ data, availableRoles, onRoleChang
     );
 };
 
-export default UserTable;
+export default CategoryTable;

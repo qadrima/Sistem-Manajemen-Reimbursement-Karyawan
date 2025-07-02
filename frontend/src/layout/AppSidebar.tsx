@@ -33,6 +33,11 @@ const navItems: NavItem[] = [
   },
   {
     icon: <ListIcon />,
+    name: "Categories",
+    path: "/categories",
+  },
+  {
+    icon: <ListIcon />,
     name: "Users",
     path: "/users",
   },

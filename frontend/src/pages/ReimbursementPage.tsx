@@ -94,7 +94,6 @@ export default function ReimbursementPage() {
         }
     };
 
-
     const fetchReimbursements = async () => {
         try {
             const response = await api.get('/reimbursements');

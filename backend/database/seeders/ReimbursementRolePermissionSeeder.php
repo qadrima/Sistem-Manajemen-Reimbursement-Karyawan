@@ -40,6 +40,7 @@ class ReimbursementRolePermissionSeeder extends Seeder
         $employee = Role::firstOrCreate(['name' => 'employee']);
         $employee->syncPermissions([
             'categories.view',
+            'roles.view',
             'reimbursement.create',
             'reimbursement.view_own',
             'reimbursement.delete',
@@ -49,6 +50,7 @@ class ReimbursementRolePermissionSeeder extends Seeder
         $manager = Role::firstOrCreate(['name' => 'manager']);
         $manager->syncPermissions([
             'categories.view',
+            'roles.view',
             'reimbursement.view_all',
             'reimbursement.approve',
             'reimbursement.reject',

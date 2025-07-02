@@ -7,6 +7,7 @@ import PrivateRoute from "./components/auth/PrivateRoute";
 import PublicRoute from './components/auth/PublicRoute';
 import ReimbursementPage from "./pages/ReimbursementPage";
 import UserPage from "./pages/UserPage";
+import CategoryPage from "./pages/CategoryPage";
 
 export default function App() {
   return (
@@ -23,6 +24,7 @@ export default function App() {
         >
           <Route index path="/" element={<ReimbursementPage />} />
           <Route index path="/users" element={<UserPage />} />
+          <Route index path="/categories" element={<CategoryPage />} />
 
         </Route>
 
