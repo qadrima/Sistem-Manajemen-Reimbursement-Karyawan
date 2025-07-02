@@ -19,7 +19,7 @@ class CategoryController extends Controller
 
         return response()->json([
             'status' => true,
-            'data' => Category::all(),
+            'data' => Category::latest()->get(),
         ]);
     }
 
@@ -34,7 +34,7 @@ class CategoryController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|unique:categories,name',
-            'limit_per_month' => 'required|numeric|min:0',
+            'limit_per_month' => 'required|numeric|min:10000',
         ]);
 
         if ($validator->fails()) {

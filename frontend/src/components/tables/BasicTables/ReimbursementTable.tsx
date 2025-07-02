@@ -1,5 +1,7 @@
 import React from 'react';
 import { useAuth } from '../../../context/AuthContext';
+import { formatRupiah } from '../../../helpers/formatRupiah';
+import Badge from '../../ui/badge/Badge';
 
 export interface CategoryModel {
     id: number;
@@ -64,7 +66,7 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
                                 Title
                             </th>
-                            <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                            <th className="px-4 py-4 font-medium text-gray-500 text-right text-theme-sm dark:text-gray-400">
                                 Amount
                             </th>
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -102,7 +104,7 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{reimbursement.title}</p>
                                 </td>
                                 <td className=" px-4 py-5 ">
-                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{reimbursement.amount}</p>
+                                    <p className="text-gray-500 text-right text-theme-sm dark:text-gray-400">{formatRupiah(reimbursement.amount)}</p>
                                 </td>
                                 <td className=" px-4 py-5 ">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{reimbursement.category.name}</p>
@@ -111,7 +113,17 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{reimbursement.user.name}</p>
                                 </td>
                                 <td className=" px-4 py-5 ">
-                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{reimbursement.status}</p>
+                                    <Badge
+                                        color={
+                                            reimbursement.status === "approved"
+                                                ? "success"
+                                                : reimbursement.status === "rejected"
+                                                    ? "error"
+                                                    : "warning"
+                                        }
+                                    >
+                                        {reimbursement.status}
+                                    </Badge>
                                 </td>
                                 <td className=" px-4 py-5 ">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -134,7 +146,7 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                                 </td>
                                 {user?.permissions.includes("reimbursement.view_all_with_trashed") && (
                                     <td className=" px-4 py-5 ">
-                                        <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                        <p className="text-red-500 text-start text-theme-sm dark:text-red-400">
                                             {reimbursement.deleted_at ? new Date(reimbursement.deleted_at).toLocaleString("id-ID", {
                                                 dateStyle: "medium",
                                                 timeStyle: "short",

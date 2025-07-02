@@ -8,10 +8,26 @@ import { useModal } from "../hooks/useModal";
 import { Modal } from "../components/ui/modal";
 import Label from "../components/form/Label";
 import Input from "../components/form/input/InputField";
+import { useEffect, useRef } from "react";
+import toast from "react-hot-toast";
 
 export default function CategoryPage() {
-    const { categories, loading, error } = useCategories();
+
+    const { categories, loading, error, errors, fetchCategories, form, handleChange, handleSubmit, handleDelete } = useCategories();
     const { isOpen, openModal, closeModal } = useModal();
+    const hasFetched = useRef(false);
+
+    const onSuccessSubmit = () => {
+        closeModal();
+        toast.success("Successfully created category");
+    };
+
+    useEffect(() => {
+        if (hasFetched.current) return;
+        hasFetched.current = true;
+
+        fetchCategories();
+    }, []);
 
     return (
         <div>
@@ -27,10 +43,9 @@ export default function CategoryPage() {
                         </Button>
                     }
                 >
-                    {loading && <p>Loading...</p>}
-                    {error && <p className="text-red-500">{error}</p>}
+                    {loading && <p className="text-center text-gray-500 dark:text-white/90">Loading..</p>}
                     {!loading && !error && (
-                        <CategoryTable data={categories} />
+                        <CategoryTable data={categories} onDelete={handleDelete} />
                     )}
                 </ComponentCard>
             </div>
@@ -53,12 +68,26 @@ export default function CategoryPage() {
                                             type="text"
                                             placeholder="Enter name"
                                             name="name"
-                                        // onChange={handleChange}
-                                        // value={form.title}
+                                            value={form.name}
+                                            onChange={handleChange}
                                         />
-                                        {/* {errors.title && (
-                                            <p className="mt-1 text-sm text-red-500">{errors.title[0]}</p>
-                                        )} */}
+                                        {errors.name && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.name[0]}</p>
+                                        )}
+                                    </div>
+
+                                    <div>
+                                        <Label>Limit Per Month</Label>
+                                        <Input
+                                            type="number"
+                                            placeholder="Enter limit per month"
+                                            name="limit_per_month"
+                                            value={form.limit_per_month}
+                                            onChange={handleChange}
+                                        />
+                                        {errors.limit_per_month && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.limit_per_month[0]}</p>
+                                        )}
                                     </div>
 
                                 </div>
@@ -69,9 +98,9 @@ export default function CategoryPage() {
                             <Button size="sm" variant="outline" onClick={closeModal}>
                                 Close
                             </Button>
-                            {/* <Button size="sm" onClick={handleSave} disabled={loadingSubmit}>
+                            <Button size="sm" onClick={() => handleSubmit(onSuccessSubmit)} disabled={loading}>
                                 Save
-                            </Button> */}
+                            </Button>
                         </div>
                     </div>
                 </div>

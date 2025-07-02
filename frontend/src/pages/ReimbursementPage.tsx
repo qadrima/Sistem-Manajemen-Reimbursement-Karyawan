@@ -78,14 +78,21 @@ export default function ReimbursementPage() {
                 proof_file: null,
             });
 
+            setErrors({});
+
             fetchReimbursements(); // refetch list
         } catch (err: any) {
-            toast.error("Failed to create reimbursement.");
 
             if (err.response && err.response.data && err.response.data.errors) {
                 setErrors(err.response.data.errors);
             } else {
                 setErrors({});
+            }
+
+            if (err && err.response && err.response.data && err.response.data.message) {
+                toast.error(err.response.data.message);
+            } else {
+                toast.error('An error occurred while creating the reimbursement');
             }
 
             console.log(err.response.data.errors);
@@ -154,8 +161,13 @@ export default function ReimbursementPage() {
             await api.post(`/reimbursements/${reimbursement.id}/approve`);
             toast.success('Reimbursement approved successfully!');
             fetchReimbursements();
-        } catch (err) {
-            toast.error('Failed to approve reimbursement.');
+        } catch (err: any) {
+            if (err && err.response && err.response.data && err.response.data.message) {
+                toast.error(err.response.data.message);
+            }
+            else {
+                toast.error('Failed to approve reimbursement.');
+            }
             console.error('Failed to approve reimbursement:', err);
         }
     };
@@ -169,8 +181,13 @@ export default function ReimbursementPage() {
             await api.post(`/reimbursements/${reimbursement.id}/reject`);
             toast.success('Reimbursement rejected successfully!');
             fetchReimbursements();
-        } catch (err) {
-            toast.error(err instanceof Error ? err.message : 'Failed to reject reimbursement.');
+        } catch (err: any) {
+            if (err && err.response && err.response.data && err.response.data.message) {
+                toast.error(err.response.data.message);
+            }
+            else {
+                toast.error('Failed to reject reimbursement.');
+            }
             console.error('Failed to reject reimbursement:', err);
         }
     };
@@ -184,8 +201,15 @@ export default function ReimbursementPage() {
             await api.delete(`/reimbursements/${reimbursement.id}`);
             toast.success('Reimbursement deleted successfully!');
             fetchReimbursements();
-        } catch (err) {
-            toast.error('Failed to delete reimbursement.');
+        } catch (err: any) {
+
+            if (err && err.response && err.response.data && err.response.data.message) {
+                toast.error(err.response.data.message);
+            }
+            else {
+                toast.error('Failed to delete reimbursement.');
+            }
+
             console.error('Failed to delete reimbursement:', err);
         }
     };
@@ -215,8 +239,7 @@ export default function ReimbursementPage() {
                         </Button>
                     }
                 >
-                    {loading && <p>Loading...</p>}
-                    {error && <p className="text-red-500">{error}</p>}
+                    {loading && <p className="text-center text-gray-500 dark:text-white/90">Loading..</p>}
                     {!loading && !error && (
                         <ReimbursementTable
                             data={reimbursements}

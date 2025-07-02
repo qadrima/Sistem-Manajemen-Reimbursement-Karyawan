@@ -20,6 +20,7 @@ export default function SignInForm() {
   const [isChecked, setIsChecked] = useState(false);
   const navigate = useNavigate();
   const { login } = useAuth();
+  const [loading, setLoading] = useState(false);
 
   const [form, setForm] = useState<LoginData>({
     email: '',
@@ -33,6 +34,7 @@ export default function SignInForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const response = await api.post('/login', form);
       // console.log(response.data.status);
       // console.log(response.data.data);
@@ -56,6 +58,8 @@ export default function SignInForm() {
         toast.error('An unexpected error occurred');
       }
 
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -120,7 +124,7 @@ export default function SignInForm() {
                   </div>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
+                  <Button className="w-full" size="sm" disabled={loading}>
                     Sign in
                   </Button>
                 </div>

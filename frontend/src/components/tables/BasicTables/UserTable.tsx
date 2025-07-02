@@ -4,7 +4,10 @@ export interface UserModel {
     id: number;
     name: string;
     email: string;
-    roles: string[];
+    roles: {
+        name: string;
+        permissions: string[];
+    }[];
 }
 
 interface UserTableProps {
@@ -31,26 +34,45 @@ const UserTable: React.FC<UserTableProps> = ({ data, availableRoles, onRoleChang
                                 Email
                             </th>
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                Roles
+                                Role & Permissions
+                            </th>
+                            <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                Change Role
                             </th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
                         {data.map((user, key) => (
                             <tr key={user.id}>
-                                <td className=" px-4 py-5">
+                                <td className="align-top px-4 py-5">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{key + 1}</p>
                                 </td>
-                                <td className=" px-4 py-5">
+                                <td className="align-top px-4 py-5">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{user.name}</p>
                                 </td>
-                                <td className=" px-4 py-5 ">
+                                <td className="align-top px-4 py-5 ">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{user.email}</p>
                                 </td>
-                                <td className=" px-4 py-5 ">
+
+                                <td className="align-top px-4 py-5">
+                                    <ul className="text-gray-500 text-start text-theme-sm dark:text-gray-400 list-disc ps-5">
+                                        {user.roles.map((role) => (
+                                            <li key={role.name}>
+                                                <strong>{role.name}</strong>
+                                                <ul className="list-[circle] ps-5">
+                                                    {role.permissions.map((perm) => (
+                                                        <li key={perm}>{perm}</li>
+                                                    ))}
+                                                </ul>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </td>
+
+                                <td className="align-top px-4 py-5 ">
                                     <select
                                         className="p-1 text-gray-500 text-start text-theme-sm dark:text-gray-400 dark:bg-gray-900 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500"
-                                        value={user.roles[0] || ''} // Assuming the first role is the current one
+                                        value={user.roles.length > 0 ? user.roles[0].name : ''}
                                         onChange={(e) => onRoleChange(user.id, e.target.value)}
                                     >
                                         <option value="" disabled>Select Role</option>

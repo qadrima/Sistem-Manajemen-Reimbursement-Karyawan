@@ -84,6 +84,7 @@ export default function UserPage() {
         try {
             const response = await api.get('/users');
             if (response.data && response.data.data) {
+                console.log('Fetched users:', response.data.data);
                 setUsers(response.data.data);
             } else {
                 setUsers([]);
@@ -154,8 +155,7 @@ export default function UserPage() {
                         </Button>
                     }
                 >
-                    {loading && <p>Loading...</p>}
-                    {error && <p className="text-red-500">{error}</p>}
+                    {loading && <p className="text-center text-gray-500 dark:text-white/90">Loading..</p>}
                     {!loading && !error && (
                         <UserTable
                             data={users}

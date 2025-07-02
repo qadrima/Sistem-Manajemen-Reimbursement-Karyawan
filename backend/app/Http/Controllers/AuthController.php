@@ -13,12 +13,17 @@ class AuthController extends Controller
 {
     public function index()
     {
-        $users = User::with('roles')->get()->map(function ($user) {
+        $users = User::with('roles.permissions')->get()->map(function ($user) {
             return [
                 'id'    => $user->id,
                 'name'  => $user->name,
                 'email' => $user->email,
-                'roles' => $user->roles->pluck('name'),
+                'roles' => $user->roles->map(function ($role) {
+                    return [
+                        'name'        => $role->name,
+                        'permissions' => $role->permissions->pluck('name'),
+                    ];
+                }),
             ];
         });
 
