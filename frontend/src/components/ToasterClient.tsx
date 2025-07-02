@@ -7,7 +7,7 @@ export default function ToasterClient() {
             position="top-center"
             toastOptions={{
                 style: {
-                    zIndex: 999999, // pastikan di atas
+                    zIndex: 99999999, // pastikan di atas
                 },
             }}
         />

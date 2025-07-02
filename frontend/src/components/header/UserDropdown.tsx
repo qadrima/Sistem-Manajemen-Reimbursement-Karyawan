@@ -10,7 +10,7 @@ export default function UserDropdown() {
   const { logout } = useAuth();
   const navigate = useNavigate();
   const { user } = useAuth();
-
+  console.log("User from context:", user);
   function toggleDropdown() {
     setIsOpen(!isOpen);
   }
@@ -65,6 +65,9 @@ export default function UserDropdown() {
           </span>
           <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
             {user?.user.email || ""}
+          </span>
+          <span className="mt-0.5 block text-theme-xs text-gray-500 dark:text-gray-400">
+            <i>Roles: {user?.roles.join(', ') || ""}</i>
           </span>
         </div>
 

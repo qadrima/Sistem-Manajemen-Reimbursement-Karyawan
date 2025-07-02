@@ -17,16 +17,22 @@ class ReimbursementController extends Controller
     {
         $user = auth()->user();
 
-        if ($user->can('reimbursement.view_all')) 
+        if ($user->can('reimbursement.view_all_with_trashed')) 
         {
             $reimbursements = Reimbursement::withTrashed() // with soft-deleted
                 ->with(['category', 'user'])
                 ->latest()
                 ->get();
         } 
+        elseif ($user->can('reimbursement.view_all')) 
+        {
+            $reimbursements = Reimbursement::with(['category', 'user'])
+                ->latest()
+                ->get();
+        }
         elseif ($user->can('reimbursement.view_own')) 
         {
-            $reimbursements = Reimbursement::with('category')
+            $reimbursements = Reimbursement::with(['category', 'user'])
                 ->where('user_id', $user->id)
                 ->latest()
                 ->get();
@@ -57,7 +63,7 @@ class ReimbursementController extends Controller
         $validator = Validator::make($request->all(), [
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
-            'amount'      => 'required|numeric|min:0',
+            'amount'      => 'required|numeric|min:1000',
             'category_id' => 'required|exists:categories,id',
             'proof_file'  => 'nullable|file|mimes:pdf,jpg,jpeg|max:2048',
         ]);
@@ -65,7 +71,7 @@ class ReimbursementController extends Controller
         if ($validator->fails()) {
             return response()->json([
                 'status' => false,
-                'message' => 'Validation failed',
+                'message' => 'Process failed',
                 'errors' => $validator->errors()
             ], 422);
         }
@@ -85,9 +91,14 @@ class ReimbursementController extends Controller
         $totalAfterSubmit = $totalThisMonth + $request->amount;
 
         if ($totalAfterSubmit > $category->limit_per_month) {
+            $errMessage = "Monthly category limit '". $category->name ."' has been exceeded. Current total:  Rp" . number_format($totalAfterSubmit, 0, ',', '.') . ", limit: Rp" . number_format($category->limit_per_month, 0, ',', '.');
+            
             return response()->json([
                 'status' => false,
-                'message' => "Monthly category limit '{$category->name}' has been exceeded. Current total:  Rp" . number_format($totalAfterSubmit, 0, ',', '.') . ", limit: Rp" . number_format($category->limit_per_month, 0, ',', '.'),
+                'message' => $errMessage,
+                'errors' => [
+                    'amount' => [$errMessage]
+                ]
             ], 422);
         }
 

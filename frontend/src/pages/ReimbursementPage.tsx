@@ -21,9 +21,16 @@ interface SubmitReimbursementData {
     proof_file: File | null;
 }
 
+interface CategoryOption {
+    value: string;
+    label: string;
+}
+
 export default function ReimbursementPage() {
     const { isOpen, openModal, closeModal } = useModal();
     const [loading, setLoading] = useState(true);
+    const [loadingSubmit, setLoadingSubmit] = useState(false);
+
     const [error, setError] = useState<string | null>(null);
     const hasFetched = useRef(false);
 
@@ -37,20 +44,56 @@ export default function ReimbursementPage() {
         proof_file: null,
     });
 
+    const [categories, setCategories] = useState<CategoryOption[]>([]);
+    const [errors, setErrors] = useState<Record<string, string[]>>({});
+
     const handleSave = async () => {
         try {
+            setLoadingSubmit(true);
+            const formData = new FormData();
+            formData.append("title", form.title);
+            formData.append("amount", String(form.amount));
+            formData.append("category_id", String(form.category_id));
+            formData.append("description", form.description);
+            if (form.proof_file) {
+                formData.append("proof_file", form.proof_file);
+            }
 
-            // Close modal
+            const response = await api.post("/reimbursements", formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                },
+            });
+
+            console.log("Reimbursement created:", response.data);
+
+            toast.success("Reimbursement created successfully!");
             closeModal();
 
-            console.log('Form data:', form);
+            setForm({
+                title: "",
+                amount: 0,
+                category_id: 0,
+                description: "",
+                proof_file: null,
+            });
 
-            toast.success('Success');
-
+            fetchReimbursements(); // refetch list
         } catch (err: any) {
-            console.log(err)
+            toast.error("Failed to create reimbursement.");
+
+            if (err.response && err.response.data && err.response.data.errors) {
+                setErrors(err.response.data.errors);
+            } else {
+                setErrors({});
+            }
+
+            console.log(err.response.data.errors);
+        } finally {
+            setLoadingSubmit(false);
         }
     };
+
 
     const fetchReimbursements = async () => {
         try {
@@ -69,15 +112,31 @@ export default function ReimbursementPage() {
         }
     };
 
+    const fetchCategories = async () => {
+        try {
+            const res = await api.get("/categories");
+            const data = res.data.data || res.data;
+
+            const formatted = data.map((cat: any) => ({
+                value: String(cat.id),
+                label: cat.name,
+            }));
+
+            setCategories(formatted);
+        } catch (err) {
+            console.error("Failed to fetch categories", err);
+            setCategories([]);
+        }
+    };
+
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
-    const options = [
-        { value: "1", label: "Marketing" },
-        { value: "2", label: "Template" },
-        { value: "3", label: "Development" },
-    ];
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files ? e.target.files[0] : null;
+        setForm({ ...form, ['proof_file']: file });
+    };
 
     const handleSelectChange = (value: string) => {
         setForm({ ...form, ['category_id']: parseInt(value, 10) });
@@ -87,11 +146,57 @@ export default function ReimbursementPage() {
         setForm({ ...form, ['description']: value });
     };
 
+    const handleApprove = async (reimbursement: ReimbursementModel) => {
+
+        const confirmed = window.confirm(`Are you sure you want to approve "${reimbursement.title}"?`);
+        if (!confirmed) return;
+
+        try {
+            await api.post(`/reimbursements/${reimbursement.id}/approve`);
+            toast.success('Reimbursement approved successfully!');
+            fetchReimbursements();
+        } catch (err) {
+            toast.error('Failed to approve reimbursement.');
+            console.error('Failed to approve reimbursement:', err);
+        }
+    };
+
+    const handleReject = async (reimbursement: ReimbursementModel) => {
+
+        const confirmed = window.confirm(`Are you sure you want to reject "${reimbursement.title}"?`);
+        if (!confirmed) return;
+
+        try {
+            await api.post(`/reimbursements/${reimbursement.id}/reject`);
+            toast.success('Reimbursement rejected successfully!');
+            fetchReimbursements();
+        } catch (err) {
+            toast.error(err instanceof Error ? err.message : 'Failed to reject reimbursement.');
+            console.error('Failed to reject reimbursement:', err);
+        }
+    };
+
+    const handleDelete = async (reimbursement: ReimbursementModel) => {
+
+        const confirmed = window.confirm(`Are you sure you want to delete "${reimbursement.title}"?`);
+        if (!confirmed) return;
+
+        try {
+            await api.delete(`/reimbursements/${reimbursement.id}`);
+            toast.success('Reimbursement deleted successfully!');
+            fetchReimbursements();
+        } catch (err) {
+            toast.error('Failed to delete reimbursement.');
+            console.error('Failed to delete reimbursement:', err);
+        }
+    };
+
     useEffect(() => {
         if (hasFetched.current) return;
         hasFetched.current = true;
 
         fetchReimbursements();
+        fetchCategories();
     }, []);
 
     return (
@@ -113,7 +218,14 @@ export default function ReimbursementPage() {
                 >
                     {loading && <p>Loading...</p>}
                     {error && <p className="text-red-500">{error}</p>}
-                    {!loading && !error && <ReimbursementTable data={reimbursements} />}
+                    {!loading && !error && (
+                        <ReimbursementTable
+                            data={reimbursements}
+                            onApprove={handleApprove}
+                            onReject={handleReject}
+                            onDelete={handleDelete}
+                        />
+                    )}
                 </ComponentCard>
             </div>
 
@@ -138,6 +250,9 @@ export default function ReimbursementPage() {
                                             onChange={handleChange}
                                             value={form.title}
                                         />
+                                        {errors.title && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.title[0]}</p>
+                                        )}
                                     </div>
                                     <div>
                                         <Label>Amount</Label>
@@ -148,33 +263,43 @@ export default function ReimbursementPage() {
                                             onChange={handleChange}
                                             value={form.amount}
                                         />
+                                        {errors.amount && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.amount[0]}</p>
+                                        )}
                                     </div>
                                     <div>
                                         <Label>Category</Label>
                                         <Select
-                                            options={options}
-                                            placeholder="Select an option"
+                                            options={categories}
                                             onChange={handleSelectChange}
                                             className="dark:bg-dark-900"
                                         />
+                                        {errors.category_id && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.category_id[0]}</p>
+                                        )}
                                     </div>
                                     <div>
                                         <Label>Description</Label>
                                         <TextArea
                                             value={form.description}
                                             onChange={handleDescChange}
-                                            rows={3}
+                                            rows={2}
                                             placeholder="Enter description"
                                         />
+                                        {errors.description && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.description[0]}</p>
+                                        )}
                                     </div>
                                     <div>
                                         <Label>Proof File</Label>
                                         <Input
                                             type="file"
                                             name="proof_file"
-                                            onChange={handleChange}
-                                            value={form.proof_file ? form.proof_file.name : ''}
+                                            onChange={handleFileChange}
                                         />
+                                        {errors.proof_file && (
+                                            <p className="mt-1 text-sm text-red-500">{errors.proof_file[0]}</p>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -184,14 +309,14 @@ export default function ReimbursementPage() {
                             <Button size="sm" variant="outline" onClick={closeModal}>
                                 Close
                             </Button>
-                            <Button size="sm" onClick={handleSave}>
+                            <Button size="sm" onClick={handleSave} disabled={loadingSubmit}>
                                 Save
                             </Button>
                         </div>
                     </div>
                 </div>
-            </Modal>
+            </Modal >
 
-        </div>
+        </div >
     );
 }

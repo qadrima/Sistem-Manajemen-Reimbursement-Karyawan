@@ -20,6 +20,7 @@ class ReimbursementRolePermissionSeeder extends Seeder
             'reimbursement.approve',
             'reimbursement.reject',
             'reimbursement.view_all',
+            'reimbursement.view_all_with_trashed',
             'categories.create',
             'categories.view',
             'categories.update',
@@ -38,13 +39,17 @@ class ReimbursementRolePermissionSeeder extends Seeder
         // Employee
         $employee = Role::firstOrCreate(['name' => 'employee']);
         $employee->syncPermissions([
+            'categories.view',
             'reimbursement.create',
             'reimbursement.view_own',
+            'reimbursement.delete',
         ]);
 
         // Manager
         $manager = Role::firstOrCreate(['name' => 'manager']);
         $manager->syncPermissions([
+            'categories.view',
+            'reimbursement.view_all',
             'reimbursement.approve',
             'reimbursement.reject',
         ]);
@@ -52,7 +57,7 @@ class ReimbursementRolePermissionSeeder extends Seeder
         // Admin
         $admin = Role::firstOrCreate(['name' => 'admin']);
         $admin->syncPermissions([
-            'reimbursement.view_all',
+            'reimbursement.view_all_with_trashed',
             'categories.create',
             'categories.view',
             'categories.update',

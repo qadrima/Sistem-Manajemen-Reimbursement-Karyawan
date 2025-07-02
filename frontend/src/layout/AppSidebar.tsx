@@ -8,7 +8,7 @@ import {
   ChevronDownIcon,
   // GridIcon,
   HorizontaLDots,
-  // ListIcon,
+  ListIcon,
   // PageIcon,
   // PieChartIcon,
   // PlugInIcon,
@@ -26,6 +26,16 @@ type NavItem = {
 };
 
 const navItems: NavItem[] = [
+  {
+    icon: <ListIcon />,
+    name: "Reimbursements",
+    path: "/",
+  },
+  {
+    icon: <ListIcon />,
+    name: "Users",
+    path: "/users",
+  },
   // {
   //   icon: <GridIcon />,
   //   name: "Dashboard",
