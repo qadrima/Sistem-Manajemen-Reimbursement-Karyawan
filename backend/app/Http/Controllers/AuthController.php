@@ -82,14 +82,14 @@ class AuthController extends Controller
             ], 422);
         }
 
-        // Coba login
+        // login
         $credentials = $request->only('email', 'password');
         if (!$token = JWTAuth::attempt($credentials)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Invalid credentials',
                 'error' => 'Unauthorized'
-            ], 401);
+            ], 422);
         }
 
         $user = auth()->user()->makeHidden(['roles', 'permissions']);
