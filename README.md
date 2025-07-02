@@ -26,12 +26,13 @@
 
 ---
 
-## 📦 Instalasi Backend
+## 📦 Setup
 
-Clone repository
 ```bash
 git clone https://github.com/qadrima/Sistem-Manajemen-Reimbursement-Karyawan.git
 ```
+
+### 📦 Backend
 
 ```bash
 cd Sistem-Manajemen-Reimbursement-Karyawan/backend
@@ -63,6 +64,15 @@ DB_PASSWORD=
 Jalankan migrasi dan seeder:
 ```bash
 php artisan migrate --seed
+
+# Default users (pass: 123456) & roles seeder:
+# superadmin@example.com (role: superadmin)
+# admin@example.com (role: admin)
+# manager@example.com (role: manager)
+# employee@example.com (role: employee)
+
+# Default categories:
+# Transportasi, Kesehatan, Makan
 ```
 
 ✉️ Konfigurasi Email (Mailtrap) Set di .env:
@@ -75,14 +85,35 @@ MAIL_PASSWORD=your_mailtrap_password
 MAIL_ENCRYPTION=null
 ```
 
-Jalankan queue:
+Run:
+```bash
+php artisan serve
+# default: http://localhost:8000
+```
+
+Mail queue:
 ```bash
 php artisan queue:work
 ```
 
-## 📦 Instalasi Frontend
+### 📦 Frontend
 
-Clone repository
 ```bash
-git clone 
+cd Sistem-Manajemen-Reimbursement-Karyawan/frontend
+```
+
+Install dependencies
+```bash
+npm install
+```
+
+Run the development server
+```bash
+npm run dev
+# or yarn dev
+```
+
+Salin file environment dan sesuaikan
+```bash
+cp .env.example .env
 ```
