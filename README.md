@@ -131,3 +131,26 @@ npm run dev
 ```bash
 sistem_manajemen_reimbursement.postman_collection.json
 ```
+
+Berikut adalah daftar request yang tersedia dalam koleksi Postman:
+
+*   **Category**
+    *   Get Categories (`GET {{baseUrl}}/api/categories`)
+    *   Create Category (`POST {{baseUrl}}/api/categories`)
+    *   Update Category (`PUT {{baseUrl}}/api/categories/:id`)
+    *   Delete Category (`DELETE {{baseUrl}}/api/categories/:id`)
+*   **Reimbursement**
+    *   Create Reimbursement (`POST {{baseUrl}}/api/reimbursements`)
+    *   Get Reimbursements (`GET {{baseUrl}}/api/reimbursements`)
+    *   Delete Reimbursement (`DELETE {{baseUrl}}/api/reimbursements/:id`)
+    *   Reject Reimbursement (`POST {{baseUrl}}/api/reimbursements/:id/reject`)
+    *   Approve Reimbursement (`POST {{baseUrl}}/api/reimbursements/:id/approve`)
+*   Login (`POST {{baseUrl}}/api/login`)
+*   Create User (`POST {{baseUrl}}/api/user`)
+*   Get All Users (`GET {{baseUrl}}/api/users`)
+*   Get Roles Permissions (`GET {{baseUrl}}/api/roles`)
+*   Assign Role (`POST {{baseUrl}}/api/user/:id/assign-role`)
+*   Activity Logs (`GET {{baseUrl}}/api/activity-logs`)
+
+Note: Replace `:id` with the actual ID of the category or reimbursement.
+
