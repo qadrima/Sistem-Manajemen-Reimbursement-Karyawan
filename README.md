@@ -185,6 +185,7 @@ Tantangan (Frontend):
 - Integrasi autentikasi JWT di React, memastikan token tersimpan aman dan request API selalu menyertakan token.
 - Menangani error response dari backend secara user-friendly (misal: validasi gagal, token expired, dsb).
 - Menyusun struktur komponen agar mudah dikembangkan dan dipelihara.
+- Penggunaan menu & actions (CRUD/approval/reject) yang masih harus disesuaikan dari sisi permissions secara view.
 
 Solusi (Frontend):
 - Menggunakan context/provider React untuk manajemen autentikasi dan token.

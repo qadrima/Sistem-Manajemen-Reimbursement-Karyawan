@@ -76,13 +76,16 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                                 User
                             </th>
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                                Status
-                            </th>
-                            <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
                                 File
                             </th>
                             <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
                                 Submitted At
+                            </th>
+                            <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                Status
+                            </th>
+                            <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                Approved At
                             </th>
                             {user?.permissions.includes("reimbursement.view_all_with_trashed") && (
                                 <th className="px-4 py-4 font-medium text-gray-500 text-start text-theme-sm dark:text-gray-400">
@@ -113,19 +116,6 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">{reimbursement.user.name}</p>
                                 </td>
                                 <td className=" px-4 py-5 ">
-                                    <Badge
-                                        color={
-                                            reimbursement.status === "approved"
-                                                ? "success"
-                                                : reimbursement.status === "rejected"
-                                                    ? "error"
-                                                    : "warning"
-                                        }
-                                    >
-                                        {reimbursement.status}
-                                    </Badge>
-                                </td>
-                                <td className=" px-4 py-5 ">
                                     <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">
                                         {reimbursement.proof_file ? (
                                             <a href={formatFileUrl(reimbursement.proof_file)} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline text-theme-sm dark:text-blue-400">
@@ -142,6 +132,27 @@ const ReimbursementTable: React.FC<ReimbursementTableProps> = ({ data, onApprove
                                             dateStyle: "medium",
                                             timeStyle: "short",
                                         })}
+                                    </p>
+                                </td>
+                                <td className=" px-4 py-5 ">
+                                    <Badge
+                                        color={
+                                            reimbursement.status === "approved"
+                                                ? "success"
+                                                : reimbursement.status === "rejected"
+                                                    ? "error"
+                                                    : "warning"
+                                        }
+                                    >
+                                        {reimbursement.status}
+                                    </Badge>
+                                </td>
+                                <td className=" px-4 py-5 ">
+                                    <p className="text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                                        {reimbursement.approved_at ? new Date(reimbursement.approved_at).toLocaleString("id-ID", {
+                                            dateStyle: "medium",
+                                            timeStyle: "short",
+                                        }) : ''}
                                     </p>
                                 </td>
                                 {user?.permissions.includes("reimbursement.view_all_with_trashed") && (
