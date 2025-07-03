@@ -82,7 +82,7 @@ php artisan migrate --seed
 # Transportasi, Kesehatan, Makan
 ```
 
-✉️ Konfigurasi Email (Mailtrap) Set di .env:
+✉️ Konfigurasi Email ([Mailtrap](https://mailtrap.io/)) Set di .env:
 ```bash
 MAIL_MAILER=smtp
 MAIL_HOST=sandbox.smtp.mailtrap.io
@@ -128,9 +128,7 @@ npm run dev
 ---
 
 ### Postman 
-```bash
-sistem_manajemen_reimbursement.postman_collection.json
-```
+[sistem_manajemen_reimbursement.postman_collection.json](https://github.com/qadrima/Sistem-Manajemen-Reimbursement-Karyawan/blob/main/sistem_manajemen_reimbursement.postman_collection.json)
 
 Berikut adalah daftar request yang tersedia dalam koleksi Postman:
 
@@ -157,8 +155,9 @@ Note: Replace `:id` with the actual ID of the category or reimbursement.
 ---
 
 ### Arsitektur Solusi
-Aplikasi ini menggunakan arsitektur client-server. Frontend (React + Vite) berkomunikasi dengan backend (Laravel REST API) menggunakan HTTP (Axios). Alur data:
+Aplikasi ini menggunakan arsitektur client-server. Frontend (React + Vite) berkomunikasi dengan backend (Laravel REST API) menggunakan HTTP (Axios). 
 
+Alur data:
 User melakukan request dari frontend (misal: login, pengajuan reimbursement).
 Frontend mengirim data ke endpoint backend (API Laravel).
 Backend memproses, melakukan validasi, menyimpan/mengambil data dari database, lalu mengembalikan response (JSON).
@@ -174,8 +173,21 @@ Perhitungan reimbursement: Limit per kategori/bulan diatur di backend. Saat user
 Integrasi: Semua logika bisnis, validasi, dan perhitungan dilakukan di backend untuk keamanan dan konsistensi data.
 
 ### Tantangan & Solusi
-Tantangan: Pengiriman email asinkron (tidak blocking user), perlunya configurasi akun jika menggunakan real email (Gmail).
+Tantangan: Pengiriman email asinkron, perlunya configurasi akun jika menggunakan real email (Gmail).
+
 Solusi: Menggunakan Laravel Queue (driver database) agar email dikirim di background dan menggunakan mailtrap untuk development.
 
 Tantangan: Manajemen role & permission yang fleksibel.
+
 Solusi: Menggunakan package Spatie Laravel Permission untuk pengelolaan role dan hak akses.
+
+Tantangan (Frontend):
+- Integrasi autentikasi JWT di React, memastikan token tersimpan aman dan request API selalu menyertakan token.
+- Menangani error response dari backend secara user-friendly (misal: validasi gagal, token expired, dsb).
+- Menyusun struktur komponen agar mudah dikembangkan dan dipelihara.
+
+Solusi (Frontend):
+- Menggunakan context/provider React untuk manajemen autentikasi dan token.
+- Membuat handler global untuk error API dan menampilkan notifikasi ke user.
+- Mengorganisasi komponen dan hooks custom agar kode lebih modular dan reusable.
+- Perlunya waktu untuk merapihkan struktur penerapan OOP yang baik dari sisi backend maupun frontend
