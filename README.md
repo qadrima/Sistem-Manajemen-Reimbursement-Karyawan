@@ -23,6 +23,7 @@
 - Laravel Queue (database driver)
 - Mailtrap SMTP (email testing)
 - MySQL / MariaDB
+- Node.js v22.4.1+
 - React (tailadmin template)
 - TypeScript
 - Vite
