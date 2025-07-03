@@ -154,3 +154,28 @@ Berikut adalah daftar request yang tersedia dalam koleksi Postman:
 
 Note: Replace `:id` with the actual ID of the category or reimbursement.
 
+---
+
+### Arsitektur Solusi
+Aplikasi ini menggunakan arsitektur client-server. Frontend (React + Vite) berkomunikasi dengan backend (Laravel REST API) menggunakan HTTP (Axios). Alur data:
+
+User melakukan request dari frontend (misal: login, pengajuan reimbursement).
+Frontend mengirim data ke endpoint backend (API Laravel).
+Backend memproses, melakukan validasi, menyimpan/mengambil data dari database, lalu mengembalikan response (JSON).
+Frontend menampilkan hasil ke user.
+
+[User] ⇄ [Frontend (React)] ⇄ [Backend (Laravel API)] ⇄ [Database]
+
+### Penjelasan Desain
+Pemilihan stack: Laravel dipilih untuk backend karena ekosistemnya lengkap (auth, queue, mail, permission, dsb). React dipilih untuk frontend agar UI interaktif dan mudah dikembangkan.
+
+Perhitungan reimbursement: Limit per kategori/bulan diatur di backend. Saat user mengajukan reimbursement, backend akan memvalidasi apakah total pengajuan bulan berjalan melebihi limit kategori. Jika melebihi, pengajuan ditolak.
+
+Integrasi: Semua logika bisnis, validasi, dan perhitungan dilakukan di backend untuk keamanan dan konsistensi data.
+
+### Tantangan & Solusi
+Tantangan: Pengiriman email asinkron (tidak blocking user), perlunya configurasi akun jika menggunakan real email (Gmail).
+Solusi: Menggunakan Laravel Queue (driver database) agar email dikirim di background dan menggunakan mailtrap untuk development.
+
+Tantangan: Manajemen role & permission yang fleksibel.
+Solusi: Menggunakan package Spatie Laravel Permission untuk pengelolaan role dan hak akses.
