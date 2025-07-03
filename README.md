@@ -23,6 +23,11 @@
 - Laravel Queue (database driver)
 - Mailtrap SMTP (email testing)
 - MySQL / MariaDB
+- React (tailadmin template)
+- TypeScript
+- Vite
+- Tailwind CSS
+- Axios
 
 ---
 
@@ -64,7 +69,9 @@ DB_PASSWORD=
 Jalankan migrasi dan seeder:
 ```bash
 php artisan migrate --seed
+```
 
+```bash
 # Default users (pass: 123456) & roles seeder:
 # superadmin@example.com (role: superadmin)
 # admin@example.com (role: admin)
@@ -107,13 +114,13 @@ Install dependencies
 npm install
 ```
 
-Run the development server
-```bash
-npm run dev
-# or yarn dev
-```
-
 Salin file environment dan sesuaikan
 ```bash
 cp .env.example .env
+```
+
+Run the development server
+```bash
+npm run dev
+# default: http://localhost:5173
 ```

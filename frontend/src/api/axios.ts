@@ -1,4 +1,5 @@
 import axios from "axios";
+import toast from "react-hot-toast";
 
 const apiUrl = import.meta.env.VITE_API_URL;
 
@@ -18,13 +19,21 @@ API.interceptors.request.use((config) => {
 API.interceptors.response.use(
   (response) => response,
   (error) => {
+
     if (error.response && error.response.status === 401) {
 
       localStorage.removeItem("token");
-      console.log("Token expired, redirecting to sign-in page.");
+      toast.error("Token expired, redirecting to sign-in page.");
       window.location.href = "/signin";
 
     }
+    else if (error.code === "ERR_NETWORK") {
+
+      localStorage.removeItem("token");
+      toast.error("Network error.");
+      // window.location.href = "/signin";
+    }
+
     return Promise.reject(error);
   }
 );
